@@ -1,0 +1,199 @@
+---
+title: "longdiff"
+author: "Kayla Esser"
+title-slide-attributes:
+    data-background-color: "#CCF3F6"
+format: revealjs
+editor: visual
+---
+
+## Imagine you are a researcher
+
+You are investigating longitudinal trends in depression, and would like to know which patients had a positive change in PHQ-9 score between their one-year follow up and baseline.
+
+![](pics/1.png){fig-align="right" width="154"}
+
+## Other use cases
+
+Say you are measuring spending over time, and would like to see the proportion of subjects that spent less money at year 5 compared to year 1.
+
+Or maybe you are interested in whether a tumour has grown, shrunk, or stayed the same across follow up appointments.
+
+![](pics/2.png){fig-align="center" width="399"}
+
+## In the olden days, you had to
+
+1.  Create a new variable that computed the difference in PHQ-9 scores between one-year and baseline
+2.  Filter for all values where that difference was greater than 0
+3.  Manually pull all IDs corresponding to a positive difference
+
+## This is you (before *longdiff*)
+
+![](pics/you.jpg){fig-align="center" width="388"}
+
+## *longdiff* to the rescue!
+
+![](pics/3.png){fig-align="center" width="226"}
+
+The *longdiff* function allows you to specify the time interval of interest, and magnitude and direction of change in a certain variable compared to baseline, facilitating the creation of a subset of your study population that meets your criteria.
+
+## Objective
+
+The purpose of this function is to output a vector of all records in a **long**itudinal data set wherein there was a specific **diff**erence in a variable from time(n) compared to time(0)
+
+## Arguments
+
+| Parameter | Definition                                                                      |
+|--------------------|----------------------------------------------------|
+| data      | Name of your dataset                                                            |
+| ID        | Variable name corresponding to individual record or subject IDs                 |
+| timevar   | Variable corresponding to timepoint (year, month, etc) of your data             |
+| var       | Variable you are interested in looking at differences when compared to baseline |
+
+## Arguments
+
+|           |                                                                                                                                      |
+|--------------------|----------------------------------------------------|
+| timeparam | Timepoint you are interested in comparing to baseline (such as the year) - a value of timevar                                        |
+| operator  | Comparison operator you would like to use to compare the difference to the cutoff, this can be "=", "\<", "\>", "\<=", "\>=" or "!=" |
+| cutoff    | Cutoff value (numerical) that you set for your variable of interest                                                                  |
+
+## Sample data
+
+```{r}
+#| echo: true
+library(dplyr)
+diffdata <- read.csv("diffdata.csv")
+head(diffdata)
+```
+
+## What's happening inside?
+
+```{r}
+#| echo: true
+longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff) {
+  names(data)[names(data) == deparse(substitute(ID))] <- "ID"
+  names(data)[names(data) == deparse(substitute(timevar))] <- "timevar"
+  names(data)[names(data) == deparse(substitute(var))] <- "var"
+
+  if (operator == ">")
+    alldiff <- data |>
+    dplyr::select(ID, timevar, var) |>
+    dplyr::arrange(ID, timevar) |>
+    dplyr::group_by(ID) |>
+    dplyr::filter(timevar == timeparam & (var - var[1L]) > cutoff) |>
+    dplyr::select(ID) |>
+    dplyr::pull(ID)
+
+  if (operator == "<")
+    alldiff <- data |>
+    dplyr::select(ID, timevar, var) |>
+    dplyr::arrange(ID, timevar) |>
+    dplyr::group_by(ID) |>
+    dplyr::filter(timevar == timeparam & (var - var[1L]) < cutoff) |>
+    dplyr::select(ID) |>
+    dplyr::pull(ID)
+
+  if (operator == "=")
+    alldiff <- data |>
+    dplyr::select(ID, timevar, var) |>
+    dplyr::arrange(ID, timevar) |>
+    dplyr::group_by(ID) |>
+    dplyr::filter(timevar == timeparam & ((var - var[1L]) == cutoff)) |>
+    dplyr::select(ID) |>
+    dplyr::pull(ID)
+
+  if (operator == "<=")
+    alldiff <- data |>
+    dplyr::select(ID, timevar, var) |>
+    dplyr::arrange(ID, timevar) |>
+    dplyr::group_by(ID) |>
+    dplyr::filter(timevar == timeparam & (var - var[1L]) <= cutoff) |>
+    dplyr::select(ID) |>
+    dplyr::pull(ID)
+
+  if (operator == ">=")
+    alldiff <- data |>
+    dplyr::select(ID, timevar, var) |>
+    dplyr::arrange(ID, timevar) |>
+    dplyr::group_by(ID) |>
+    dplyr::filter(timevar == timeparam & (var - var[1L]) >= cutoff) |>
+    dplyr::select(ID) |>
+    dplyr::pull(ID)
+
+  if (operator == "!=")
+    alldiff <- data |>
+    dplyr::select(ID, timevar, var) |>
+    dplyr::arrange(ID, timevar) |>
+    dplyr::group_by(ID) |>
+    dplyr::filter(timevar == timeparam & (var - var[1L]) != cutoff) |>
+    dplyr::select(ID) |>
+    dplyr::pull(ID)
+
+  return(alldiff)
+}
+```
+
+## Examples
+
+```{r}
+#| echo: true
+pos_set <- longdiff(diffdata, record_id, timepoint, test_score, 2002, ">", 0)
+pos_set
+```
+
+![](pics/4.png){fig-align="center" width="399"}
+
+## Check if patient 4 is in subset
+
+```{r}
+#| echo: true
+4 %in% pos_set
+```
+
+## Check proportion of subset
+
+```{r}
+#| echo: true
+(length(pos_set)/length(unique(diffdata$record_id)))*100 
+```
+
+## Strengths
+
+The function is generalizable to all possible comparison operators in r
+
+``` r
+=, <, >, <=, >=, !=
+```
+
+Any numerical cutoff can be used (i.e. a clinically meaningful cutoff)
+
+``` r
+longdiff(diffdata, record_id, timepoint, test_score, 2002, ">=", 30)
+```
+
+This function can accept both numerical and character timepoint values
+
+``` r
+Year = 2002 | Visit = "Follow up 1"
+longdiff(diffdata, record_id, timepoint, test_score, "Follow up 1", "=", 10)
+```
+
+## Future directions
+
+One modification to increase the utility of this function would be to add the comparator timepoint as an argument (the default is currently baseline \[1L\]) so that comparisons could be made across any time point
+
+## Download *longdiff* today!
+
+``` r
+install.packages("devtools")
+library(devtools)
+devtools::install_github("kayserena/longdiff")
+library(longdiff)
+```
+
+## Questions?
+
+![](pics/6.png){fig-align="center" width="377"}
+
+## Thank you!
