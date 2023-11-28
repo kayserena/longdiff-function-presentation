@@ -406,16 +406,16 @@ Kayla Esser
 <p>You are investigating longitudinal trends in depression, and would like to know which patients had a positive change in PHQ-9 score between their one-year follow up and baseline.</p>
 
 <img data-src="pics/1.png" width="154" class="r-stretch quarto-figure-right"></section>
-<section id="other-use-cases" class="slide level2">
-<h2>Other use cases</h2>
-<p>Say you are measuring spending over time, and would like to see the proportion of subjects that spent less money at year 5 compared to year 1.</p>
-<p>Or maybe you are interested in whether a tumour has grown, shrunk, or stayed the same across follow up appointments.</p>
+<section id="or-maybe" class="slide level2">
+<h2>Or maybe</h2>
+<p>You are measuring spending over time, and would like to see the proportion of subjects that spent less money at year 5 compared to year 1.</p>
+<p>Or you are interested in whether a tumour has grown, shrunk, or stayed the same across follow up appointments.</p>
 
 <img data-src="pics/2.png" width="399" class="r-stretch quarto-figure-center"></section>
 <section id="in-the-olden-days-you-had-to" class="slide level2">
 <h2>In the olden days, you had to</h2>
 <ol type="1">
-<li>Create a new variable that computed the difference in PHQ-9 scores between one-year and baseline</li>
+<li>Create a new variable that computed the difference in scores between one-year and baseline</li>
 <li>Filter for all values where that difference was greater than 0</li>
 <li>Manually pull all IDs corresponding to a positive difference</li>
 </ol>
@@ -433,12 +433,16 @@ Kayla Esser
 <h2>Objective</h2>
 <p>The purpose of this function is to output a vector of all records in a <strong>long</strong>itudinal data set wherein there was a specific <strong>diff</strong>erence in a variable from time(n) compared to time(0)</p>
 </section>
+<section id="meet-the-function" class="slide level2">
+<h2>Meet the function</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a>longdiff <span class="ot">&lt;-</span> <span class="cf">function</span>(data, ID, timevar, var, timeparam, operator, cutoff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
 <section id="arguments" class="slide level2">
 <h2>Arguments</h2>
 <table>
 <colgroup>
-<col style="width: 27%">
-<col style="width: 72%">
+<col style="width: 29%">
+<col style="width: 70%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -449,7 +453,7 @@ Kayla Esser
 <tbody>
 <tr class="odd">
 <td>data</td>
-<td>Name of your dataset</td>
+<td>Name of your data set</td>
 </tr>
 <tr class="even">
 <td>ID</td>
@@ -470,8 +474,8 @@ Kayla Esser
 <h2>Arguments</h2>
 <table>
 <colgroup>
-<col style="width: 27%">
-<col style="width: 72%">
+<col style="width: 29%">
+<col style="width: 70%">
 </colgroup>
 <tbody>
 <tr class="odd">
@@ -492,9 +496,9 @@ Kayla Esser
 <section id="sample-data" class="slide level2">
 <h2>Sample data</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>diffdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"diffdata.csv"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="fu">head</span>(diffdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb2-2"><a href="#cb2-2"></a>diffdata <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"diffdata.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="fu">head</span>(diffdata)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  record_id timepoint test_score
 1         1      2000         43
@@ -509,74 +513,74 @@ Kayla Esser
 <section id="whats-happening-inside" class="slide level2">
 <h2>What’s happening inside?</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>longdiff <span class="ot">&lt;-</span> <span class="cf">function</span>(data, ID, timevar, var, timeparam, operator, cutoff) {</span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">names</span>(data)[<span class="fu">names</span>(data) <span class="sc">==</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(ID))] <span class="ot">&lt;-</span> <span class="st">"ID"</span></span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">names</span>(data)[<span class="fu">names</span>(data) <span class="sc">==</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(timevar))] <span class="ot">&lt;-</span> <span class="st">"timevar"</span></span>
-<span id="cb3-4"><a href="#cb3-4"></a>  <span class="fu">names</span>(data)[<span class="fu">names</span>(data) <span class="sc">==</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(var))] <span class="ot">&lt;-</span> <span class="st">"var"</span></span>
-<span id="cb3-5"><a href="#cb3-5"></a></span>
-<span id="cb3-6"><a href="#cb3-6"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&gt;"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb3-8"><a href="#cb3-8"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
-<span id="cb3-9"><a href="#cb3-9"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
-<span id="cb3-10"><a href="#cb3-10"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-11"><a href="#cb3-11"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&gt;</span> cutoff) <span class="sc">|&gt;</span></span>
-<span id="cb3-12"><a href="#cb3-12"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-13"><a href="#cb3-13"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
-<span id="cb3-14"><a href="#cb3-14"></a></span>
-<span id="cb3-15"><a href="#cb3-15"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&lt;"</span>)</span>
-<span id="cb3-16"><a href="#cb3-16"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb3-17"><a href="#cb3-17"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
-<span id="cb3-18"><a href="#cb3-18"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
-<span id="cb3-19"><a href="#cb3-19"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-20"><a href="#cb3-20"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&lt;</span> cutoff) <span class="sc">|&gt;</span></span>
-<span id="cb3-21"><a href="#cb3-21"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-22"><a href="#cb3-22"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
-<span id="cb3-23"><a href="#cb3-23"></a></span>
-<span id="cb3-24"><a href="#cb3-24"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"="</span>)</span>
-<span id="cb3-25"><a href="#cb3-25"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb3-26"><a href="#cb3-26"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
-<span id="cb3-27"><a href="#cb3-27"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
-<span id="cb3-28"><a href="#cb3-28"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-29"><a href="#cb3-29"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> ((var <span class="sc">-</span> var[1L]) <span class="sc">==</span> cutoff)) <span class="sc">|&gt;</span></span>
-<span id="cb3-30"><a href="#cb3-30"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-31"><a href="#cb3-31"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
-<span id="cb3-32"><a href="#cb3-32"></a></span>
-<span id="cb3-33"><a href="#cb3-33"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&lt;="</span>)</span>
-<span id="cb3-34"><a href="#cb3-34"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb3-35"><a href="#cb3-35"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
-<span id="cb3-36"><a href="#cb3-36"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
-<span id="cb3-37"><a href="#cb3-37"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-38"><a href="#cb3-38"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&lt;=</span> cutoff) <span class="sc">|&gt;</span></span>
-<span id="cb3-39"><a href="#cb3-39"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-40"><a href="#cb3-40"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
-<span id="cb3-41"><a href="#cb3-41"></a></span>
-<span id="cb3-42"><a href="#cb3-42"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&gt;="</span>)</span>
-<span id="cb3-43"><a href="#cb3-43"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb3-44"><a href="#cb3-44"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
-<span id="cb3-45"><a href="#cb3-45"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
-<span id="cb3-46"><a href="#cb3-46"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-47"><a href="#cb3-47"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&gt;=</span> cutoff) <span class="sc">|&gt;</span></span>
-<span id="cb3-48"><a href="#cb3-48"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-49"><a href="#cb3-49"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
-<span id="cb3-50"><a href="#cb3-50"></a></span>
-<span id="cb3-51"><a href="#cb3-51"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"!="</span>)</span>
-<span id="cb3-52"><a href="#cb3-52"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
-<span id="cb3-53"><a href="#cb3-53"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
-<span id="cb3-54"><a href="#cb3-54"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
-<span id="cb3-55"><a href="#cb3-55"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-56"><a href="#cb3-56"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">!=</span> cutoff) <span class="sc">|&gt;</span></span>
-<span id="cb3-57"><a href="#cb3-57"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
-<span id="cb3-58"><a href="#cb3-58"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
-<span id="cb3-59"><a href="#cb3-59"></a></span>
-<span id="cb3-60"><a href="#cb3-60"></a>  <span class="fu">return</span>(alldiff)</span>
-<span id="cb3-61"><a href="#cb3-61"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>longdiff <span class="ot">&lt;-</span> <span class="cf">function</span>(data, ID, timevar, var, timeparam, operator, cutoff) {</span>
+<span id="cb4-2"><a href="#cb4-2"></a>  <span class="fu">names</span>(data)[<span class="fu">names</span>(data) <span class="sc">==</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(ID))] <span class="ot">&lt;-</span> <span class="st">"ID"</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">names</span>(data)[<span class="fu">names</span>(data) <span class="sc">==</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(timevar))] <span class="ot">&lt;-</span> <span class="st">"timevar"</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a>  <span class="fu">names</span>(data)[<span class="fu">names</span>(data) <span class="sc">==</span> <span class="fu">deparse</span>(<span class="fu">substitute</span>(var))] <span class="ot">&lt;-</span> <span class="st">"var"</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a></span>
+<span id="cb4-6"><a href="#cb4-6"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&gt;"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
+<span id="cb4-9"><a href="#cb4-9"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&gt;</span> cutoff) <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
+<span id="cb4-14"><a href="#cb4-14"></a></span>
+<span id="cb4-15"><a href="#cb4-15"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&lt;"</span>)</span>
+<span id="cb4-16"><a href="#cb4-16"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-17"><a href="#cb4-17"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
+<span id="cb4-18"><a href="#cb4-18"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&lt;</span> cutoff) <span class="sc">|&gt;</span></span>
+<span id="cb4-21"><a href="#cb4-21"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
+<span id="cb4-23"><a href="#cb4-23"></a></span>
+<span id="cb4-24"><a href="#cb4-24"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"="</span>)</span>
+<span id="cb4-25"><a href="#cb4-25"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-26"><a href="#cb4-26"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
+<span id="cb4-27"><a href="#cb4-27"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
+<span id="cb4-28"><a href="#cb4-28"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-29"><a href="#cb4-29"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> ((var <span class="sc">-</span> var[1L]) <span class="sc">==</span> cutoff)) <span class="sc">|&gt;</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-31"><a href="#cb4-31"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
+<span id="cb4-32"><a href="#cb4-32"></a></span>
+<span id="cb4-33"><a href="#cb4-33"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&lt;="</span>)</span>
+<span id="cb4-34"><a href="#cb4-34"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-35"><a href="#cb4-35"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
+<span id="cb4-36"><a href="#cb4-36"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
+<span id="cb4-37"><a href="#cb4-37"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-38"><a href="#cb4-38"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&lt;=</span> cutoff) <span class="sc">|&gt;</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-40"><a href="#cb4-40"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
+<span id="cb4-41"><a href="#cb4-41"></a></span>
+<span id="cb4-42"><a href="#cb4-42"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"&gt;="</span>)</span>
+<span id="cb4-43"><a href="#cb4-43"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
+<span id="cb4-46"><a href="#cb4-46"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">&gt;=</span> cutoff) <span class="sc">|&gt;</span></span>
+<span id="cb4-48"><a href="#cb4-48"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-49"><a href="#cb4-49"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
+<span id="cb4-50"><a href="#cb4-50"></a></span>
+<span id="cb4-51"><a href="#cb4-51"></a>  <span class="cf">if</span> (operator <span class="sc">==</span> <span class="st">"!="</span>)</span>
+<span id="cb4-52"><a href="#cb4-52"></a>    alldiff <span class="ot">&lt;-</span> data <span class="sc">|&gt;</span></span>
+<span id="cb4-53"><a href="#cb4-53"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID, timevar, var) <span class="sc">|&gt;</span></span>
+<span id="cb4-54"><a href="#cb4-54"></a>    dplyr<span class="sc">::</span><span class="fu">arrange</span>(ID, timevar) <span class="sc">|&gt;</span></span>
+<span id="cb4-55"><a href="#cb4-55"></a>    dplyr<span class="sc">::</span><span class="fu">group_by</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-56"><a href="#cb4-56"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(timevar <span class="sc">==</span> timeparam <span class="sc">&amp;</span> (var <span class="sc">-</span> var[1L]) <span class="sc">!=</span> cutoff) <span class="sc">|&gt;</span></span>
+<span id="cb4-57"><a href="#cb4-57"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(ID) <span class="sc">|&gt;</span></span>
+<span id="cb4-58"><a href="#cb4-58"></a>    dplyr<span class="sc">::</span><span class="fu">pull</span>(ID)</span>
+<span id="cb4-59"><a href="#cb4-59"></a></span>
+<span id="cb4-60"><a href="#cb4-60"></a>  <span class="fu">return</span>(alldiff)</span>
+<span id="cb4-61"><a href="#cb4-61"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="examples" class="slide level2">
-<h2>Examples</h2>
+<section id="example" class="slide level2">
+<h2>Example</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>pos_set <span class="ot">&lt;-</span> <span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2002</span>, <span class="st">"&gt;"</span>, <span class="dv">0</span>)</span>
-<span id="cb4-2"><a href="#cb4-2"></a>pos_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>pos_set <span class="ot">&lt;-</span> <span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2002</span>, <span class="st">"&gt;"</span>, <span class="dv">0</span>)</span>
+<span id="cb5-2"><a href="#cb5-2"></a>pos_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4 7 8</code></pre>
 </div>
@@ -586,7 +590,7 @@ Kayla Esser
 <section id="check-if-patient-4-is-in-subset" class="slide level2">
 <h2>Check if patient 4 is in subset</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="dv">4</span> <span class="sc">%in%</span> pos_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="dv">4</span> <span class="sc">%in%</span> pos_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
 </div>
@@ -595,32 +599,43 @@ Kayla Esser
 <section id="check-proportion-of-subset" class="slide level2">
 <h2>Check proportion of subset</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a>(<span class="fu">length</span>(pos_set)<span class="sc">/</span><span class="fu">length</span>(<span class="fu">unique</span>(diffdata<span class="sc">$</span>record_id)))<span class="sc">*</span><span class="dv">100</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>(<span class="fu">length</span>(pos_set)<span class="sc">/</span><span class="fu">length</span>(<span class="fu">unique</span>(diffdata<span class="sc">$</span>record_id)))<span class="sc">*</span><span class="dv">100</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 30</code></pre>
+</div>
+</div>
+</section>
+<section id="another-example" class="slide level2">
+<h2>Another example</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>neq_set <span class="ot">&lt;-</span> <span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2001</span>, <span class="st">"&lt;="</span>, <span class="dv">5</span>)</span>
+<span id="cb11-2"><a href="#cb11-2"></a>neq_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  4  5  6  7  9 10</code></pre>
 </div>
 </div>
 </section>
 <section id="strengths" class="slide level2">
 <h2>Strengths</h2>
 <p>The function is generalizable to all possible comparison operators in r</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a><span class="ot">=</span>, <span class="sc">&lt;</span>, <span class="sc">&gt;</span>, <span class="sc">&lt;=</span>, <span class="sc">&gt;=</span>, <span class="sc">!=</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="ot">=</span>, <span class="sc">&lt;</span>, <span class="sc">&gt;</span>, <span class="sc">&lt;=</span>, <span class="sc">&gt;=</span>, <span class="sc">!=</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Any numerical cutoff can be used (i.e.&nbsp;a clinically meaningful cutoff)</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2002</span>, <span class="st">"&gt;="</span>, <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2002</span>, <span class="st">"&gt;="</span>, <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This function can accept both numerical and character timepoint values</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1"></a>Year <span class="ot">=</span> <span class="dv">2002</span> <span class="sc">|</span> Visit <span class="ot">=</span> <span class="st">"Follow up 1"</span></span>
-<span id="cb12-2"><a href="#cb12-2"></a><span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="st">"Follow up 1"</span>, <span class="st">"="</span>, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>Year <span class="ot">=</span> <span class="dv">2002</span> <span class="sc">|</span> Visit <span class="ot">=</span> <span class="st">"Follow up 1"</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="st">"Follow up 1"</span>, <span class="st">"="</span>, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="future-directions" class="slide level2">
 <h2>Future directions</h2>
 <p>One modification to increase the utility of this function would be to add the comparator timepoint as an argument (the default is currently baseline [1L]) so that comparisons could be made across any time point</p>
+<p>Another modification would be to make the function more robust against missing data, as it currently only accepts complete data sets.</p>
 </section>
 <section id="download-longdiff-today" class="slide level2">
 <h2>Download <em>longdiff</em> today!</h2>
-<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
-<span id="cb13-2"><a href="#cb13-2"></a><span class="fu">library</span>(devtools)</span>
-<span id="cb13-3"><a href="#cb13-3"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"kayserena/longdiff"</span>)</span>
-<span id="cb13-4"><a href="#cb13-4"></a><span class="fu">library</span>(longdiff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">library</span>(devtools)</span>
+<span id="cb16-3"><a href="#cb16-3"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"kayserena/longdiff"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="fu">library</span>(longdiff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="questions" class="slide level2">
 <h2>Questions?</h2>

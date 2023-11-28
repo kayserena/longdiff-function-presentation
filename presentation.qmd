@@ -13,17 +13,17 @@ You are investigating longitudinal trends in depression, and would like to know 
 
 ![](pics/1.png){fig-align="right" width="154"}
 
-## Other use cases
+## Or maybe
 
-Say you are measuring spending over time, and would like to see the proportion of subjects that spent less money at year 5 compared to year 1.
+You are measuring spending over time, and would like to see the proportion of subjects that spent less money at year 5 compared to year 1.
 
-Or maybe you are interested in whether a tumour has grown, shrunk, or stayed the same across follow up appointments.
+Or you are interested in whether a tumour has grown, shrunk, or stayed the same across follow up appointments.
 
 ![](pics/2.png){fig-align="center" width="399"}
 
 ## In the olden days, you had to
 
-1.  Create a new variable that computed the difference in PHQ-9 scores between one-year and baseline
+1.  Create a new variable that computed the difference in scores between one-year and baseline
 2.  Filter for all values where that difference was greater than 0
 3.  Manually pull all IDs corresponding to a positive difference
 
@@ -41,11 +41,17 @@ The *longdiff* function allows you to specify the time interval of interest, and
 
 The purpose of this function is to output a vector of all records in a **long**itudinal data set wherein there was a specific **diff**erence in a variable from time(n) compared to time(0)
 
+## Meet the function
+
+``` r
+longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff)
+```
+
 ## Arguments
 
 | Parameter | Definition                                                                      |
-|--------------------|----------------------------------------------------|
-| data      | Name of your dataset                                                            |
+|----------------------|--------------------------------------------------|
+| data      | Name of your data set                                                           |
 | ID        | Variable name corresponding to individual record or subject IDs                 |
 | timevar   | Variable corresponding to timepoint (year, month, etc) of your data             |
 | var       | Variable you are interested in looking at differences when compared to baseline |
@@ -53,7 +59,7 @@ The purpose of this function is to output a vector of all records in a **long**i
 ## Arguments
 
 |           |                                                                                                                                      |
-|--------------------|----------------------------------------------------|
+|----------------------|--------------------------------------------------|
 | timeparam | Timepoint you are interested in comparing to baseline (such as the year) - a value of timevar                                        |
 | operator  | Comparison operator you would like to use to compare the difference to the cutoff, this can be "=", "\<", "\>", "\<=", "\>=" or "!=" |
 | cutoff    | Cutoff value (numerical) that you set for your variable of interest                                                                  |
@@ -134,7 +140,7 @@ longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff) {
 }
 ```
 
-## Examples
+## Example
 
 ```{r}
 #| echo: true
@@ -156,6 +162,14 @@ pos_set
 ```{r}
 #| echo: true
 (length(pos_set)/length(unique(diffdata$record_id)))*100 
+```
+
+## Another example
+
+```{r}
+#| echo: true
+neq_set <- longdiff(diffdata, record_id, timepoint, test_score, 2001, "<=", 5)
+neq_set
 ```
 
 ## Strengths
@@ -182,6 +196,8 @@ longdiff(diffdata, record_id, timepoint, test_score, "Follow up 1", "=", 10)
 ## Future directions
 
 One modification to increase the utility of this function would be to add the comparator timepoint as an argument (the default is currently baseline \[1L\]) so that comparisons could be made across any time point
+
+Another modification would be to make the function more robust against missing data, as it currently only accepts complete data sets.
 
 ## Download *longdiff* today!
 
