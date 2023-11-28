@@ -64,15 +64,6 @@ longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff)
 | operator  | Comparison operator you would like to use to compare the difference to the cutoff, this can be "=", "\<", "\>", "\<=", "\>=" or "!=" |
 | cutoff    | Cutoff value (numerical) that you set for your variable of interest                                                                  |
 
-## Sample data
-
-```{r}
-#| echo: true
-library(dplyr)
-diffdata <- read.csv("diffdata.csv")
-head(diffdata)
-```
-
 ## What's happening inside?
 
 ```{r}
@@ -138,6 +129,15 @@ longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff) {
 
   return(alldiff)
 }
+```
+
+## Sample data
+
+```{r}
+#| echo: true
+library(dplyr)
+diffdata <- read.csv("diffdata.csv")
+head(diffdata)
 ```
 
 ## Example
