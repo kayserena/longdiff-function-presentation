@@ -13,7 +13,7 @@ You are investigating longitudinal trends in depression, and would like to know 
 
 ![](pics/1.png){fig-align="right" width="154"}
 
-## Or maybe
+## Other applications
 
 You are measuring spending over time, and would like to see the proportion of subjects that spent less money at year 5 compared to year 1.
 
@@ -50,7 +50,7 @@ longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff)
 ## Arguments
 
 | Parameter | Definition                                                                      |
-|----------------------|--------------------------------------------------|
+|-------------------------|----------------------------------------------|
 | data      | Name of your data set                                                           |
 | ID        | Variable name corresponding to individual record or subject IDs                 |
 | timevar   | Variable corresponding to timepoint (year, month, etc) of your data             |
@@ -59,7 +59,7 @@ longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff)
 ## Arguments
 
 |           |                                                                                                                                      |
-|----------------------|--------------------------------------------------|
+|-------------------------|----------------------------------------------|
 | timeparam | Timepoint you are interested in comparing to baseline (such as the year) - a value of timevar                                        |
 | operator  | Comparison operator you would like to use to compare the difference to the cutoff, this can be "=", "\<", "\>", "\<=", "\>=" or "!=" |
 | cutoff    | Cutoff value (numerical) that you set for your variable of interest                                                                  |
@@ -197,6 +197,7 @@ longdiff(diffdata, record_id, timepoint, test_score, "Follow up 1", "=", 10)
 
 One modification to increase the utility of this function would be to add the comparator timepoint as an argument (the default is currently baseline \[1L\]) so that comparisons could be made across any time point
 
+\
 Another modification would be to make the function more robust against missing data, as it currently only accepts complete data sets.
 
 ## Download *longdiff* today!
@@ -212,4 +213,4 @@ library(longdiff)
 
 ![](pics/6.png){fig-align="center" width="377"}
 
-## Thank you!
+## Thank you! {style="text-align: center;"}
