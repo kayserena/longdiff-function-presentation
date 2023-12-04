@@ -7,6 +7,20 @@ format: revealjs
 editor: visual
 ---
 
+## Overview
+
+1.  What's the gap?
+
+2.  Objective
+
+3.  Meet the function
+
+4.  Examples and applications
+
+5.  Strengths
+
+6.  Future directions
+
 ## Imagine you are a researcher
 
 You are investigating longitudinal trends in depression, and would like to know which patients had a positive change in PHQ-9 score between their one-year follow up and baseline.
@@ -50,7 +64,7 @@ longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff)
 ## Arguments
 
 | Parameter | Definition                                                                      |
-|-------------------------|----------------------------------------------|
+|--------------------------|----------------------------------------------|
 | data      | Name of your data set                                                           |
 | ID        | Variable name corresponding to individual record or subject IDs                 |
 | timevar   | Variable corresponding to timepoint (year, month, etc) of your data             |
@@ -59,7 +73,7 @@ longdiff <- function(data, ID, timevar, var, timeparam, operator, cutoff)
 ## Arguments
 
 |           |                                                                                                                                      |
-|-------------------------|----------------------------------------------|
+|--------------------------|----------------------------------------------|
 | timeparam | Timepoint you are interested in comparing to baseline (such as the year) - a value of timevar                                        |
 | operator  | Comparison operator you would like to use to compare the difference to the cutoff, this can be "=", "\<", "\>", "\<=", "\>=" or "!=" |
 | cutoff    | Cutoff value (numerical) that you set for your variable of interest                                                                  |
@@ -150,11 +164,12 @@ pos_set
 
 ![](pics/4.png){fig-align="center" width="399"}
 
-## Check if patient 4 is in subset
+## Check if patient is in subset
 
 ```{r}
 #| echo: true
 4 %in% pos_set
+1 %in% pos_set
 ```
 
 ## Check proportion of subset
@@ -189,8 +204,8 @@ longdiff(diffdata, record_id, timepoint, test_score, 2002, ">=", 30)
 This function can accept both numerical and character timepoint values
 
 ``` r
-Year = 2002 | Visit = "Follow up 1"
-longdiff(diffdata, record_id, timepoint, test_score, "Follow up 1", "=", 10)
+visit = "Follow up 1"
+longdiff(diffdata, record_id, visit, test_score, "Follow up 1", "=", 10)
 ```
 
 ## Future directions

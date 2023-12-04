@@ -401,6 +401,17 @@ Kayla Esser
 </div>
 
 </section>
+<section id="overview" class="slide level2">
+<h2>Overview</h2>
+<ol type="1">
+<li><p>What’s the gap?</p></li>
+<li><p>Objective</p></li>
+<li><p>Meet the function</p></li>
+<li><p>Examples and applications</p></li>
+<li><p>Strengths</p></li>
+<li><p>Future directions</p></li>
+</ol>
+</section>
 <section id="imagine-you-are-a-researcher" class="slide level2">
 <h2>Imagine you are a researcher</h2>
 <p>You are investigating longitudinal trends in depression, and would like to know which patients had a positive change in PHQ-9 score between their one-year follow up and baseline.</p>
@@ -441,8 +452,8 @@ Kayla Esser
 <h2>Arguments</h2>
 <table>
 <colgroup>
-<col style="width: 30%">
-<col style="width: 69%">
+<col style="width: 36%">
+<col style="width: 63%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -474,8 +485,8 @@ Kayla Esser
 <h2>Arguments</h2>
 <table>
 <colgroup>
-<col style="width: 30%">
-<col style="width: 69%">
+<col style="width: 36%">
+<col style="width: 63%">
 </colgroup>
 <tbody>
 <tr class="odd">
@@ -587,19 +598,23 @@ Kayla Esser
 </div>
 
 <img data-src="pics/4.png" width="399" class="r-stretch quarto-figure-center"></section>
-<section id="check-if-patient-4-is-in-subset" class="slide level2">
-<h2>Check if patient 4 is in subset</h2>
+<section id="check-if-patient-is-in-subset" class="slide level2">
+<h2>Check if patient is in subset</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="dv">4</span> <span class="sc">%in%</span> pos_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="dv">1</span> <span class="sc">%in%</span> pos_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
 </div>
 </div>
 </section>
 <section id="check-proportion-of-subset" class="slide level2">
 <h2>Check proportion of subset</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>(<span class="fu">length</span>(pos_set)<span class="sc">/</span><span class="fu">length</span>(<span class="fu">unique</span>(diffdata<span class="sc">$</span>record_id)))<span class="sc">*</span><span class="dv">100</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>(<span class="fu">length</span>(pos_set)<span class="sc">/</span><span class="fu">length</span>(<span class="fu">unique</span>(diffdata<span class="sc">$</span>record_id)))<span class="sc">*</span><span class="dv">100</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 30</code></pre>
 </div>
@@ -608,8 +623,8 @@ Kayla Esser
 <section id="another-example" class="slide level2">
 <h2>Another example</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>neq_set <span class="ot">&lt;-</span> <span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2001</span>, <span class="st">"&lt;="</span>, <span class="dv">5</span>)</span>
-<span id="cb11-2"><a href="#cb11-2"></a>neq_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>neq_set <span class="ot">&lt;-</span> <span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2001</span>, <span class="st">"&lt;="</span>, <span class="dv">5</span>)</span>
+<span id="cb13-2"><a href="#cb13-2"></a>neq_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1]  4  5  6  7  9 10</code></pre>
 </div>
@@ -618,24 +633,25 @@ Kayla Esser
 <section id="strengths" class="slide level2">
 <h2>Strengths</h2>
 <p>The function is generalizable to all possible comparison operators in r</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a><span class="ot">=</span>, <span class="sc">&lt;</span>, <span class="sc">&gt;</span>, <span class="sc">&lt;=</span>, <span class="sc">&gt;=</span>, <span class="sc">!=</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a><span class="ot">=</span>, <span class="sc">&lt;</span>, <span class="sc">&gt;</span>, <span class="sc">&lt;=</span>, <span class="sc">&gt;=</span>, <span class="sc">!=</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Any numerical cutoff can be used (i.e.&nbsp;a clinically meaningful cutoff)</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1"></a><span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2002</span>, <span class="st">"&gt;="</span>, <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="dv">2002</span>, <span class="st">"&gt;="</span>, <span class="dv">30</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>This function can accept both numerical and character timepoint values</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>Year <span class="ot">=</span> <span class="dv">2002</span> <span class="sc">|</span> Visit <span class="ot">=</span> <span class="st">"Follow up 1"</span></span>
-<span id="cb15-2"><a href="#cb15-2"></a><span class="fu">longdiff</span>(diffdata, record_id, timepoint, test_score, <span class="st">"Follow up 1"</span>, <span class="st">"="</span>, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a>visit <span class="ot">=</span> <span class="st">"Follow up 1"</span></span>
+<span id="cb17-2"><a href="#cb17-2"></a><span class="fu">longdiff</span>(diffdata, record_id, visit, test_score, <span class="st">"Follow up 1"</span>, <span class="st">"="</span>, <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="future-directions" class="slide level2">
 <h2>Future directions</h2>
 <p>One modification to increase the utility of this function would be to add the comparator timepoint as an argument (the default is currently baseline [1L]) so that comparisons could be made across any time point</p>
-<p>Another modification would be to make the function more robust against missing data, as it currently only accepts complete data sets.</p>
+<p><br>
+Another modification would be to make the function more robust against missing data, as it currently only accepts complete data sets.</p>
 </section>
 <section id="download-longdiff-today" class="slide level2">
 <h2>Download <em>longdiff</em> today!</h2>
-<div class="sourceCode" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1"></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
-<span id="cb16-2"><a href="#cb16-2"></a><span class="fu">library</span>(devtools)</span>
-<span id="cb16-3"><a href="#cb16-3"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"kayserena/longdiff"</span>)</span>
-<span id="cb16-4"><a href="#cb16-4"></a><span class="fu">library</span>(longdiff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a><span class="fu">install.packages</span>(<span class="st">"devtools"</span>)</span>
+<span id="cb18-2"><a href="#cb18-2"></a><span class="fu">library</span>(devtools)</span>
+<span id="cb18-3"><a href="#cb18-3"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"kayserena/longdiff"</span>)</span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="fu">library</span>(longdiff)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="questions" class="slide level2">
 <h2>Questions?</h2>
